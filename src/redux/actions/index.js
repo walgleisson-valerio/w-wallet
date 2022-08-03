@@ -1,5 +1,5 @@
 export const SAVE_USER = 'SAVE_USER';
-export const SAVE_WALLET = 'SAVE_WALLET';
+export const ADD_EXPENSE = 'ADD_EXPENSE';
 export const SET_CURRENCIES = 'SET_CURRENCIES';
 
 export const saveUser = (email) => ({
@@ -7,10 +7,10 @@ export const saveUser = (email) => ({
   email,
 });
 
-// export const saveWallet = (currencies) => ({
-//   type: SAVE_WALLET,
-//   currencies,
-// });
+export const addExpense = (expense) => ({
+  type: ADD_EXPENSE,
+  expense,
+});
 
 export const setCurrencies = (currencies) => ({
   type: SET_CURRENCIES,

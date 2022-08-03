@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { setCurrencies } from '../redux/actions';
+import {
+  addExpense as addExpenseAction,
+  setCurrencies,
+} from '../redux/actions';
 import getCurrencies from '../services/getCurrencies';
 
 const INITIAL_STATE = {
@@ -25,7 +28,7 @@ class WalletForm extends Component {
     this.getCurrenciesOptions();
   }
 
-  // pega as moedas da API
+  // pega as moedas da API e adiona ao local state
   getExchangesRates = async () => {
     const currencies = await getCurrencies();
     delete currencies.USDT;
@@ -51,11 +54,20 @@ class WalletForm extends Component {
     });
   }
 
-  saveExchange = async (event) => {
+  // setID = () => {
+  //   const { expenses } = this.props;
+  //   const id = expenses.length;
+  //   this.setState({ id });
+  // }
+
+  saveExpense = async (event) => {
     event.preventDefault();
+    const { addExpense } = this.props;
+
     await this.getExchangesRates();
-    const { expenses } = this.props;
-    console.log(expenses);
+    const expense = this.state;
+    addExpense(expense);
+
     this.setState(INITIAL_STATE);
   }
 
@@ -130,7 +142,7 @@ class WalletForm extends Component {
         </label>
         <button
           type="submit"
-          onClick={ (event) => this.saveExchange(event) }
+          onClick={ (event) => this.saveExpense(event) }
         >
           Adicionar Despesa
         </button>
@@ -146,12 +158,14 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   addCurrencies: (currencies) => dispatch(setCurrencies(currencies)),
+  addExpense: (expense) => dispatch(addExpenseAction(expense)),
 });
 
 WalletForm.propTypes = {
   currencies: PropTypes.array,
   expenses: PropTypes.array,
   addCurrencies: PropTypes.func,
+  addExpense: PropTypes.func,
 }.isRequired;
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletForm);

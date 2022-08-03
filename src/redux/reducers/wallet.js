@@ -1,6 +1,6 @@
 // export { SAVE_WALLET } from '../actions';
 
-import { SET_CURRENCIES } from '../actions';
+import { SET_CURRENCIES, ADD_EXPENSE } from '../actions';
 
 const INITIAL_STATE = {
   currencies: [], // array de string
@@ -16,11 +16,17 @@ const wallet = (state = INITIAL_STATE, action) => {
       ...state,
       currencies: action.currencies,
     };
-  // case 'SAVE_WALLET':
-  //   return {
-  //     ...state,
-  //     wallet: action.payload, // apenas para config inicial
-  //   };
+
+  case ADD_EXPENSE:
+    action.expense.id = state.expenses.length;
+    return {
+      ...state,
+      expenses: [
+        ...state.expenses,
+        action.expense,
+      ],
+    };
+
   default:
     return state;
   }
