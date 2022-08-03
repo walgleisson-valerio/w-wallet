@@ -20,7 +20,7 @@ class Login extends React.Component {
     );
   }
 
-  isDisableButton = () => {
+  isButtonEnable = () => {
     const { email, password } = this.state;
     const VALID_EMAIL = /\S+@\S+\.\S+/;
     const MIN_SIZE_OF_PASSWORD = 6;
@@ -28,9 +28,7 @@ class Login extends React.Component {
     if (
       VALID_EMAIL.test(email)
       && password.length >= MIN_SIZE_OF_PASSWORD
-    ) {
-      return false;
-    } return true;
+    ) return true;
   }
 
   login = () => {
@@ -66,7 +64,7 @@ class Login extends React.Component {
         </label>
         <button
           type="submit"
-          disabled={ this.isDisableButton() }
+          disabled={ !this.isButtonEnable() }
           onClick={ this.login }
         >
           Entrar
