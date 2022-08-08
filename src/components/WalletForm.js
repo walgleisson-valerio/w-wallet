@@ -8,7 +8,7 @@ import {
 import getCurrencies from '../services/getCurrencies';
 
 const INITIAL_STATE = {
-  id: 0,
+  // id: 0,
   value: '',
   description: '',
   currency: 'USD',
@@ -63,6 +63,7 @@ class WalletForm extends Component {
   saveExpense = async (event) => {
     event.preventDefault();
     const { addExpense } = this.props;
+    // this.setState({ id: expenseID });
 
     await this.getExchangesRates();
     const expense = this.state;
@@ -154,6 +155,7 @@ class WalletForm extends Component {
 const mapStateToProps = (state) => ({
   currencies: state.wallet.currencies,
   expenses: state.wallet.expenses,
+  expenseID: state.wallet.currentID,
 });
 
 const mapDispatchToProps = (dispatch) => ({
