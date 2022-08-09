@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
   addExpense as addExpenseAction,
+  editExpense as editExpenseAction,
+  handleTotal as handleTotalAction,
   setCurrencies,
 } from '../redux/actions';
 import getCurrencies from '../services/getCurrencies';
@@ -60,20 +62,39 @@ class WalletForm extends Component {
   //   this.setState({ id });
   // }
 
+  // attTotal = () => {
+  //   const { handleTotal } = this.props;
+  //   handleTotal();
+  // }
+
   saveExpense = async (event) => {
     event.preventDefault();
-    const { addExpense } = this.props;
-    // this.setState({ id: expenseID });
-
+    const { addExpense, handleTotal } = this.props;
     await this.getExchangesRates();
     const expense = this.state;
     addExpense(expense);
 
     this.setState(INITIAL_STATE);
+    handleTotal();
+  }
+
+  editarExpense = async (event) => {
+    event.preventDefault();
+    await this.getExchangesRates();
+    const { idToEdit, expenses, editExpense, handleTotal } = this.props;
+    // copia o array do store
+    const newExpenses = [...expenses];
+    const expenseToEdit = { ...this.state };
+    expenseToEdit.id = idToEdit;
+
+    newExpenses[idToEdit] = expenseToEdit;
+
+    editExpense(newExpenses);
+    handleTotal();
   }
 
   render() {
-    const { currencies } = this.props;
+    const { currencies, editor } = this.props;
     const { value, description, currency, method, tag } = this.state;
 
     return (
@@ -143,10 +164,14 @@ class WalletForm extends Component {
         </label>
         <button
           type="submit"
-          onClick={ (event) => this.saveExpense(event) }
+          onClick={
+            editor ? (event) => this.editarExpense(event)
+              : (event) => this.saveExpense(event)
+          }
         >
-          Adicionar Despesa
+          { editor ? 'Editar Despesa' : 'Adicionar Despesa'}
         </button>
+
       </form>
     );
   }
@@ -155,19 +180,27 @@ class WalletForm extends Component {
 const mapStateToProps = (state) => ({
   currencies: state.wallet.currencies,
   expenses: state.wallet.expenses,
+  editor: state.wallet.editor,
+  idToEdit: state.wallet.idToEdit,
   expenseID: state.wallet.currentID,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   addCurrencies: (currencies) => dispatch(setCurrencies(currencies)),
   addExpense: (expense) => dispatch(addExpenseAction(expense)),
+  editExpense: (newExpenses) => dispatch(editExpenseAction(newExpenses)),
+  handleTotal: () => dispatch(handleTotalAction()),
 });
 
 WalletForm.propTypes = {
   currencies: PropTypes.array,
   expenses: PropTypes.array,
+  editor: PropTypes.bool,
+  idToEdit: PropTypes.number,
   addCurrencies: PropTypes.func,
   addExpense: PropTypes.func,
+  editExpense: PropTypes.func,
+  handleTotal: PropTypes.func,
 }.isRequired;
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletForm);
